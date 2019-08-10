@@ -69,8 +69,6 @@ function love.textinput(t)
 		local res, score = meteor.consumeLetter(meteorId)
 		if (res == true) then
 			game.score = game.score + score
-			meteor.focusedId = 0
-			
 		end
 	end
 end

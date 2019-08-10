@@ -156,17 +156,17 @@ function meteor.onTexteEntered(text)
 	if (meteor.focusedId == 0) then
 		for i = 1, meteor.maxMeteorId do
 			if (meteor[i] ~= nil
-					and text:match(meteor[i].text:sub(1, 1))) then
+				and #meteor[i].text > 0
+				and text:match(meteor[i].text:sub(1, 1)) ~= nil) then
 				meteor.focusedId = i
 				break
 			end
 		end
 	elseif (meteor[meteor.focusedId] == nil
-			or not text:match(meteor[meteor.focusedId].text:sub(1, 1))) then
+			or text:match(meteor[meteor.focusedId].text:sub(1, 1)) == nil) then
 		meteor.focusedId = 0
 	end
 	
-	textdbg = meteor.focusedId
 	return meteor.focusedId
 end
 
@@ -176,6 +176,7 @@ function meteor.consumeLetter(meteorId)
 	meteor[meteorId].text = meteor[meteorId].text:sub(2)
 
 	if (#meteor[meteorId].text == 0) then
+		meteor.focusedId = 0
 		return true, meteor[meteorId].score
 	end
 
