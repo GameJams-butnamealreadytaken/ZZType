@@ -10,7 +10,7 @@ function love.load()
     love.window.setMode(windowWidth, windowHeight)
 
     num = 0
-	text = "ntm"
+	textdbg = "ntm"
 
 	--love.graphics.setNewFont("resources/kenvector_future.ttf", 12) -- unreadable
 
@@ -18,7 +18,7 @@ function love.load()
 
 	game.initialize()
 
-	text = dictionary.maxWordLength
+	textdbg = dictionary.maxWordLength
  end
  
 function love.draw()
@@ -27,7 +27,7 @@ function love.draw()
 	game.draw()
 
 	-- debug
-    love.graphics.print(text, 300, 300)
+    love.graphics.print(textdbg, 300, 300)
 end
 
 function love.focus(f) 

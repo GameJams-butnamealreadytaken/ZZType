@@ -27,9 +27,9 @@ end
 
 function game.draw()
 	gameBackground.draw()
-	ship.draw()
 	meteor.draw()
 	missile.draw()
+	ship.draw()
 
 	textScore = "Score : " .. game.score
 	textCombo = "Combo : "	 .. game.combo
@@ -70,21 +70,22 @@ function love.textinput(t)
 		if (res == true) then
 			game.score = game.score + score
 			meteor.focusedId = 0
-			if (meteor.meteorCpt == 0) then
-				game.waveLevel = game.waveLevel + 1
-				launchWave()
-			end
+			
 		end
 	end
 end
 
-
+function game.waveEnded()
+	meteor.reset()
+	missile.reset()
+	game.waveLevel = game.waveLevel + 1
+	launchWave()
+end
 
 
 function love.keypressed(key)
-	if key == "space" then
-		game.waveLevel = game.waveLevel + 1
-		launchWave()
+	if key == "space" then	
+		game.waveEnded()
 	elseif key == "backspace" then
 		meteor.focusedId = 0
 	end

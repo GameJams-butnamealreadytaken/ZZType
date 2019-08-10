@@ -32,6 +32,14 @@ function meteor.initialize()
 	}
 end
 
+function meteor.reset()
+	for i = 1, meteor.maxMeteorId do
+		meteor[i] = nil
+	end
+	meteor.meteorCpt = 0
+	meteor.maxMeteorId = 0
+end
+
 -- Create a new meteor
 function meteor.create(minWordLength, maxWordLength)
 	-- Start location
@@ -45,6 +53,9 @@ function meteor.create(minWordLength, maxWordLength)
 	local vecLength = math.sqrt(vecx * vecx + vecy * vecy)
 	local dirx = vecx / vecLength
 	local diry = vecy / vecLength
+	
+	-- angular factor
+	local angle = (love.math.random(0 ,2) - 1) / 100
 	
 	-- Get word
 	local wordSize = 0
@@ -73,7 +84,22 @@ function meteor.create(minWordLength, maxWordLength)
 
 	meteor.maxMeteorId = meteor.maxMeteorId + 1
 	meteor.meteorCpt = meteor.meteorCpt + 1
-	meteor[meteor.maxMeteorId] = { sprite = sprite, x = x, y = y, destx = destx, lifePoint = #text, text = text, textx = (x - (love.graphics.getFont():getWidth(text) / 2)) + (sprite:getWidth() / 2), texty = y + sprite:getHeight(), dirx = dirx, diry = diry, score = spriteSpriteId * 10}
+	meteor[meteor.maxMeteorId] = 
+	{ 
+		sprite = sprite,
+		x = x,
+		y = y,
+		destx = destx,
+		angleFactor = angle,
+		curAngle = 0,
+		lifePoint = #text,
+		text = text,
+		textx = (x - (love.graphics.getFont():getWidth(text) / 2)) + (sprite:getWidth() / 2),
+		texty = y + sprite:getHeight(),
+		dirx = dirx, 
+		diry = diry,
+		score = spriteSpriteId * 10
+	}
 end
 
 -- Update sprites and texts locations based on speed and direction
@@ -88,20 +114,23 @@ function meteor.update(dt)
 			meteor[i].y = meteor[i].y + speedy
 			meteor[i].texty = meteor[i].texty + speedy
 
+			meteor[i].curAngle = meteor[i].curAngle + meteor[i].angleFactor
+			
 			-- Check if out of screen
 			if (meteor[i].y > windowHeight) then
-				removeMeteor(i)
+				meteor.removeMeteor(i)
 				game.takeDamage()
 			end
 		end
 	end
 end
 
--- Draw sprites and texts. Draw focused text in red
+-- Draw sprites and texts. 
+-- Draw focused text in red and in front of sprite for visibility purpose
 function meteor.draw()
 	for i = 1, meteor.maxMeteorId do
 		if (meteor[i] ~= nil ) then
-			love.graphics.draw(meteor[i].sprite, meteor[i].x, meteor[i].y)
+			love.graphics.draw(meteor[i].sprite, meteor[i].x, meteor[i].y, meteor[i].curAngle, 1, 1, meteor[i].sprite:getWidth() / 2, meteor[i].sprite:getHeight() / 2)
 		end
 	end
 	
@@ -111,7 +140,9 @@ function meteor.draw()
 			if (meteor.focusedId == i) then
 				love.graphics.setColor(255,0,0)
 			end
-			love.graphics.print(meteor[i].text, meteor[i].textx, meteor[i].texty)
+			-- Have to offset text location because of offset applied on sprite for rotation
+			love.graphics.print(meteor[i].text, meteor[i].textx - meteor[i].sprite:getWidth() / 2, meteor[i].texty - meteor[i].sprite:getHeight() / 2)
+			love.graphics.print(i, meteor[i].textx, meteor[i].texty + 10)
 			if (meteor.focusedId == i) then
 				love.graphics.setColor(255,255,255)
 			end
@@ -135,6 +166,7 @@ function meteor.onTexteEntered(text)
 		meteor.focusedId = 0
 	end
 	
+	textdbg = meteor.focusedId
 	return meteor.focusedId
 end
 
@@ -150,10 +182,20 @@ function meteor.consumeLetter(meteorId)
 	return false, 0
 end
 
+-- Remove a given meteor
+-- Return true if it was the last one
 function meteor.removeMeteor(meteorId)
 	meteor[meteorId] = nil
 	meteor.meteorCpt = meteor.meteorCpt - 1
+	-- Check if can reduce max ID
 	if (meteorId == meteor.maxMeteorId) then meteor.maxMeteorId = meteor.maxMeteorId - 1 end
+	-- Check if wave is ended
+	if (meteor.meteorCpt == 0) then 
+		game.waveEnded()
+		return true
+	end
+	
+	return false
 end
 
 return meteor

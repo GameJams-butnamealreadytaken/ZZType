@@ -4,14 +4,14 @@ local shipSprite, x, y, missileOffset
 
 function ship.initialize()
     shipSprite = love.graphics.newImage("resources/ship.png")
-	x = (windowWidth / 2) - 21
+	x = (windowWidth / 2) - shipSprite:getWidth() / 4 -- / 4 because of scale
 	y = windowHeight - 50
 	
-	missileOffset = 10
+	missileOffset = 15
 end
 
 function ship.launchMissile(meteorId)
-	missile.launch(x + missileOffset, y, meteorId)
+	missile.launch(x + (shipSprite:getWidth() / 4) + missileOffset, y, meteorId)
 	missileOffset = missileOffset * -1
 end
 
