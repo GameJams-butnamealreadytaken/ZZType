@@ -1,10 +1,17 @@
-game = { score = 0, combo = 0, waveLevel = 1}
+game = { state = "game", score = 0, bestScore = 0, combo = 0, bestCombo = 0, waveLevel = 1}
 
 ship = require 'src/ship'
 missile = require 'src/missile'
 meteor = require 'src/meteor'
 
 dictionary  = require 'src/dictionary'
+
+mode =
+{
+	classic = true,
+	theme = false,
+	custom = false
+}
 
 local textScore = ""
 local textCombo = ""
@@ -17,9 +24,22 @@ function game.initialize()
 	meteor.initialize()
 	missile.initialize()
 
-	launchWave()
  end
- 
+
+function game.play()
+	game.score = 0
+	game.combo = 0
+	game.waveLevel = 1
+	launchWave()
+end
+
+function game.stop()
+	game.bestCombo = math.max(game.combo, game.bestCombo)
+	game.bestScore = math.max(game.score, game.bestScore)
+	meteor.reset()
+	missile.reset()
+end
+
 function game.update(dt)
 	meteor.update(dt)
 	missile.update(dt)
@@ -37,7 +57,7 @@ function game.draw()
 
     love.graphics.print(textScore, 10, windowHeight - 20)
     love.graphics.print(textCombo, 10, windowHeight - 40)
-    love.graphics.print(textWave, windowWidth - 75, windowHeight - 20)
+    love.graphics.print(textWave, windowWidth - 100, windowHeight - 20)
 end
 
 function launchWave()
@@ -55,13 +75,21 @@ end
 
 -- Called when a meteor reach the ship
 function game.takeDamage()
-	-- gameover?
+	switchState(mainmenu)
 end
 
-function love.textinput(t)
+function game.waveEnded()
+	meteor.reset()
+	missile.reset()
+	game.waveLevel = game.waveLevel + 1
+	launchWave()
+end
+
+function game.textinput(t)
     meteorId = meteor.onTexteEntered(t)
 
 	if (0 == meteorId) then
+		game.bestCombo = math.max(game.combo, game.bestCombo)
 		game.combo = 0
 	else
 		game.combo = game.combo + 1
@@ -73,15 +101,7 @@ function love.textinput(t)
 	end
 end
 
-function game.waveEnded()
-	meteor.reset()
-	missile.reset()
-	game.waveLevel = game.waveLevel + 1
-	launchWave()
-end
-
-
-function love.keypressed(key)
+function game.keypressed(key)
 	if key == "space" then	
 		game.waveEnded()
 	elseif key == "backspace" then
@@ -89,5 +109,12 @@ function love.keypressed(key)
 	end
 end
 
+function game.mousepressed(x, y, button, istouch, presses)
+	-- do smthg
+end
+
+function game.mousemoved(x, y, dx, dy, istouch)
+	-- do smthg
+end
 
 return game

@@ -33,20 +33,26 @@ end
 function missile.update(dt)
 	for i = 1, missile.maxMissileId do
 		if (missile[i] ~= nil ) then
+			local targetMeteor = meteor[missile[i].meteorId]
+			if (targetMeteor == nil) then removeMissile(i) return end
+			
 			if (missile[i].explode == true) then
+				-- Explosion Animation
 				missile[i].explosionDt = missile[i].explosionDt + dt
 				if (missile[i].explosionDt > 0.1) then
 					missile[i].explosionDt = 0
 					missile[i].explosionCpt = missile[i].explosionCpt + 1
 					if (missile[i].explosionCpt > 5) then
+						-- Exploded, deal damage to meteor and check if dead
+						if (targetMeteor.lifePoint == 0) then
+							if (meteor.removeMeteor(missile[i].meteorId) == true) then return end
+						end
 						removeMissile(i)
 					else
 						missile[i].exploSprite = explosionSprite[missile[i].explosionCpt]
 					end
 				end
 			else
-				local targetMeteor = meteor[missile[i].meteorId]
-				if (targetMeteor == nil) then removeMissile(i) return end
 				destx, desty = targetMeteor.x, targetMeteor.y
 				x, y = missile[i].x, missile[i].y
 				
@@ -63,13 +69,14 @@ function missile.update(dt)
 				missile[i].x = missile[i].x + speedx
 				missile[i].y = missile[i].y + speedy
 
-				-- Reached its meteore ?
+				-- Reached its meteore
 				if (vecLength < 5) then
-					targetMeteor.lifePoint = targetMeteor.lifePoint - 1
-					if (targetMeteor.lifePoint == 0) then
-						if (meteor.removeMeteor(missile[i].meteorId) == true) then return end
-					end
 					missile[i].explode = true
+					if (targetMeteor.lifePoint == 1) then
+						-- Last meteor life point, stop moving it
+						targetMeteor.isDead = true
+					end
+					targetMeteor.lifePoint = targetMeteor.lifePoint - 1
 				end
 			end
 		end

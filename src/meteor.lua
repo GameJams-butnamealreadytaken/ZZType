@@ -98,14 +98,16 @@ function meteor.create(minWordLength, maxWordLength)
 		texty = y + sprite:getHeight(),
 		dirx = dirx, 
 		diry = diry,
-		score = spriteSpriteId * 10
+		score = spriteSpriteId * 10,
+		isDead = false
 	}
 end
 
 -- Update sprites and texts locations based on speed and direction
 function meteor.update(dt)
 	for i = 1, meteor.maxMeteorId do
-		if (meteor[i] ~= nil ) then
+		if (meteor[i] ~= nil 
+			and meteor[i].isDead == false) then
 			local speedx = meteor[i].dirx * meteor.speedFactor * 60 * dt
 			local speedy = meteor[i].diry * meteor.speedFactor * 60 * dt
 			
@@ -133,7 +135,8 @@ function meteor.draw()
 			love.graphics.draw(meteor[i].sprite, meteor[i].x, meteor[i].y, meteor[i].curAngle, 1, 1, meteor[i].sprite:getWidth() / 2, meteor[i].sprite:getHeight() / 2)
 		end
 	end
-	
+			
+	love.graphics.setFont(defaultFont)
 	for i = 1, meteor.maxMeteorId do
 		if (meteor[i] ~= nil ) then
 
@@ -141,13 +144,14 @@ function meteor.draw()
 				love.graphics.setColor(255,0,0)
 			end
 			-- Have to offset text location because of offset applied on sprite for rotation
-			love.graphics.print(meteor[i].text, meteor[i].textx - meteor[i].sprite:getWidth() / 2, meteor[i].texty - meteor[i].sprite:getHeight() / 2)
-			love.graphics.print(i, meteor[i].textx, meteor[i].texty + 10)
+			love.graphics.print(meteor[i].text, meteor[i].textx - meteor[i].sprite:getWidth() / 2, meteor[i].texty - meteor[i].sprite:getHeight() / 2, 0, 1, 1, defaultFont:getWidth(meteor[i].text) / 2, defaultFont:getHeight(meteor[i].text) / 2)
+			--love.graphics.print(i, meteor[i].textx, meteor[i].texty + 10)
 			if (meteor.focusedId == i) then
 				love.graphics.setColor(255,255,255)
 			end
 		end
 	end
+	love.graphics.setFont(futurFont)
 end
 
 -- Check if $text is a valid first letter in every meteors OR in currently focused one
@@ -186,6 +190,7 @@ end
 -- Remove a given meteor
 -- Return true if it was the last one
 function meteor.removeMeteor(meteorId)
+	textdbg = meteorId
 	meteor[meteorId] = nil
 	meteor.meteorCpt = meteor.meteorCpt - 1
 	-- Check if can reduce max ID
