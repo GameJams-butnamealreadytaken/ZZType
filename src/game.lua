@@ -115,7 +115,7 @@ function game.textinput(t)
 end
 
 function game.keypressed(key)
-	if key == "space" then	
+	if key == "f1" then	
 		game.waveEnded()
 	elseif key == "escape" then
 		game.takeDamage()

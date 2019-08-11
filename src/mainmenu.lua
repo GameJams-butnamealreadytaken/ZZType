@@ -11,10 +11,6 @@ local textTheme, textHelpTheme
 local textCustom, textHelpCustom
 local currentHelpText
 
-local textBestScore, textLastScore
-local textBestCombo
-local textBestWave, textLastWave
-
 local cursorAngle, cursorAngleFactor, cursorSprite, cursorX, cursorY = 0, 0.1
 
 function mainmenu.initialize()
@@ -46,13 +42,7 @@ function mainmenu.play()
 		mainmenu.music:play()
 	end
 	
-	mode.classic = true; -- to get stats from ther full name
-	
-	textBestScore = "Best Score: " .. stats.getStat("bestScore") .. "\t" .. stats.getStat("bestScoreTheme") .. "\t" .. stats.getStat("bestScoreCustom")
-	textLastScore = "Last Score: " .. stats.getStat("score") .. "\t" .. stats.getStat("scoreTheme") .. "\t" .. stats.getStat("scoreCustom")
-	textBestWave = "Best Wave: " .. stats.getStat("bestWave") .. "\t" .. stats.getStat("bestWaveTheme") .. "\t" .. "-"
-	textLastWave = "Last Wave: " .. stats.getStat("waveLevel") .. "\t" .. stats.getStat("waveLevelTheme") .. "\t" .. "-"
-	textBestCombo = "Best Combo:" .. stats.getStat("bestCombo") .. "\t" .. stats.getStat("bestComboTheme") .. "\t" .. stats.getStat("bestComboCustom")
+	mode.classic = true; -- to get stats from their full name
 end
 
 function mainmenu.stop()
@@ -104,16 +94,35 @@ function mainmenu.draw()
 		love.graphics.printf(currentHelpText, x, y, 400, "center", 0, 1, 1, 200)
 	end
 	
-	y = y + 125
-	love.graphics.print(textBestScore, x, y, 0, 1, 1, futurFont:getWidth(textBestScore) / 2, futurFont:getHeight(textBestScore) / 2)
+	y = y + 100
+	love.graphics.print("classic"						, x - 70 , y)
+	love.graphics.print("theme"							, x + 50, y)
+	love.graphics.print("custom"						, x + 150, y)
 	y = y + 25
-	love.graphics.print(textLastScore, x, y, 0, 1, 1, futurFont:getWidth(textLastScore) / 2, futurFont:getHeight(textLastScore) / 2)
+	love.graphics.print("Best Score", x - 225, y)
+	love.graphics.print(stats.getStat("bestScore")		, x - 70 , y)
+	love.graphics.print(stats.getStat("bestScoreTheme")	, x + 50, y)
+	love.graphics.print(stats.getStat("bestScoreCustom"), x + 150, y)
 	y = y + 25
-	love.graphics.print(textBestWave, x, y, 0, 1, 1, futurFont:getWidth(textBestWave) / 2, futurFont:getHeight(textBestWave) / 2)
+	love.graphics.print("Last Score", x - 225, y)
+	love.graphics.print(stats.getStat("score")			, x - 70 , y)
+	love.graphics.print(stats.getStat("scoreTheme")		, x + 50, y)
+	love.graphics.print(stats.getStat("scoreCustom")	, x + 150, y)
 	y = y + 25
-	love.graphics.print(textLastWave, x, y, 0, 1, 1, futurFont:getWidth(textLastWave) / 2, futurFont:getHeight(textLastWave) / 2)
+	love.graphics.print("Best Wave", x - 225, y)
+	love.graphics.print(stats.getStat("bestWave")		, x - 70 , y)
+	love.graphics.print(stats.getStat("bestWaveTheme")	, x + 50, y)
+	love.graphics.print("-"								, x + 150, y)
 	y = y + 25
-	love.graphics.print(textBestCombo, x, y, 0, 1, 1, futurFont:getWidth(textBestCombo) / 2, futurFont:getHeight(textMaxCombo) / 2)
+	love.graphics.print("Last Wave", x - 225, y)
+	love.graphics.print(stats.getStat("waveLevel")		, x - 70 , y)
+	love.graphics.print(stats.getStat("waveLevelTheme")	, x + 50, y)
+	love.graphics.print("-"								, x + 150, y)
+	y = y + 25
+	love.graphics.print("Best Combo", x - 225, y)
+	love.graphics.print(stats.getStat("bestCombo")		, x - 70 , y)
+	love.graphics.print(stats.getStat("bestComboTheme")	, x + 50, y)
+	love.graphics.print(stats.getStat("bestComboCustom"), x + 150, y)
 
 	-- Cursor
 	x, y = love.mouse.getPosition()

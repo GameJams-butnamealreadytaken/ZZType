@@ -12,14 +12,14 @@ stats =
 {
 	score = 0,
 	bestScore = 0, 
-	combo = 0, 
+	combo = 0,
 	bestCombo = 0, 
 	waveLevel = 0, 
 	bestWave = 0,
 	
 	scoreTheme = 0,
 	bestScoreTheme = 0, 
-	comboTheme = 0, 
+	comboTheme = 0,
 	bestComboTheme = 0, 
 	waveLevelTheme = 0, 
 	bestWaveTheme = 0,
@@ -146,21 +146,18 @@ function saveStats()
 	
     save = "stats.score = " .. stats.score
     save = save.. ";stats.bestScore = " .. stats.bestScore
-    save = save.. ";stats.combo = " .. stats.combo
     save = save.. ";stats.bestCombo = " .. stats.bestCombo
     save = save.. ";stats.waveLevel = " .. stats.waveLevel
     save = save.. ";stats.bestWave = " .. stats.bestWave
 
     save = save.. ";stats.scoreTheme = " .. stats.scoreTheme
     save = save.. ";stats.bestScoreTheme = " .. stats.bestScoreTheme
-    save = save.. ";stats.comboTheme = " .. stats.comboTheme
     save = save.. ";stats.bestComboTheme = " .. stats.bestComboTheme
     save = save.. ";stats.waveLevelTheme = " .. stats.waveLevelTheme
     save = save.. ";stats.bestWaveTheme = " .. stats.bestWaveTheme
 	
     save = save.. ";stats.scoreCustom = " .. stats.scoreCustom
     save = save.. ";stats.bestScoreCustom = " .. stats.bestScoreCustom
-    save = save.. ";stats.comboCustom = " .. stats.comboCustom
     save = save.. ";stats.bestComboCustom = " .. stats.bestComboCustom
 	
     love.filesystem.write(fileName, save)
