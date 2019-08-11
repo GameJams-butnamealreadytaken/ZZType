@@ -29,6 +29,7 @@ stats =
 	comboCustom = 0, 
 	bestComboCustom = 0, 
 }
+
 gameState = 
 {
 	mainmenu = true,
@@ -159,4 +160,38 @@ function saveStats()
     save = save.. ";stats.bestComboCustom = " .. stats.bestComboCustom
 	
     love.filesystem.write(fileName, save)
+end
+
+function stats.setStat(name, value)
+	if (mode.classic == true) then
+		if (stats[name] ~= nil) then
+			stats[name] = value
+		end
+	elseif (mode.theme == true) then
+		if (stats[name.."Theme"] ~= nil) then
+			stats[name.."Theme"] = value
+		end
+	else
+		if (stats[name.."Combo"] ~= nil) then
+			stats[name.."Combo"] = value
+		end
+	end
+end
+
+function stats.getStat(name)
+	if (mode.classic == true) then
+		if (stats[name] ~= nil) then
+			return stats[name]
+		end
+	elseif (mode.theme == true) then
+		if (stats[name.."Theme"] ~= nil) then
+			return stats[name.."Theme"]
+		end
+	else
+		if (stats[name.."Combo"] ~= nil) then
+			return stats[name.."Combo"]
+		end
+	end
+	
+	return 0
 end

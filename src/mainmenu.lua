@@ -46,11 +46,13 @@ function mainmenu.play()
 		mainmenu.music:play()
 	end
 	
-	textBestScore = "Best Score: " .. stats.bestScore
-	textLastScore = "Last Score: " .. stats.score
-	textBestWave = "Best Wave: " .. stats.bestWave
-	textLastWave = "Last Wave: " .. stats.waveLevel
-	textBestCombo = "Best Combo: " .. stats.bestCombo
+	mode.classic = true; -- to get stats from ther full name
+	
+	textBestScore = "Best Score: " .. stats.getStat("bestScore") .. "\t" .. stats.getStat("bestScoreTheme") .. "\t" .. stats.getStat("bestScoreCustom")
+	textLastScore = "Last Score: " .. stats.getStat("score") .. "\t" .. stats.getStat("scoreTheme") .. "\t" .. stats.getStat("scoreCustom")
+	textBestWave = "Best Wave: " .. stats.getStat("bestWave") .. "\t" .. stats.getStat("bestWaveTheme") .. "\t" .. "-"
+	textLastWave = "Last Wave: " .. stats.getStat("waveLevel") .. "\t" .. stats.getStat("waveLevelTheme") .. "\t" .. "-"
+	textBestCombo = "Best Combo:" .. stats.getStat("bestCombo") .. "\t" .. stats.getStat("bestComboTheme") .. "\t" .. stats.getStat("bestComboCustom")
 end
 
 function mainmenu.stop()

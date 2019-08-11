@@ -31,21 +31,24 @@ function game.play()
 		if (love.audio.getActiveSourceCount() == 0) then
 			mainmenu.music:play()
 		end
+		
 	end
+	
+	stats.setStat("score", 0)
+	stats.setStat("combo", 0)
+	stats.setStat("waveLevel", 1)
+	
 	ship.play()
 	missile.play()
 	
-	stats.score = 0
-	stats.combo = 0
-	stats.waveLevel = 1
 	launchWave()
 end
 
 function game.stop()
 	musicTheme:stop()
-	stats.bestCombo = math.max(stats.combo, stats.bestCombo)
-	stats.bestScore = math.max(stats.score, stats.bestScore)
-	stats.bestWave = math.max(stats.waveLevel, stats.bestWave)
+	stats.setStat("bestCombo", math.max(stats.getStat("combo"), stats.getStat("bestCombo")))
+	stats.setStat("bestScore", math.max(stats.getStat("score"), stats.getStat("bestScore")))
+	stats.setStat("bestWave", math.max(stats.getStat("waveLevel"), stats.getStat("bestWave")))
 	meteor.reset()
 	missile.reset()
 end
@@ -53,6 +56,10 @@ end
 function game.update(dt)
 	meteor.update(dt)
 	missile.update(dt)
+	
+	textScore = "Score : " .. stats.getStat("score")
+	textCombo = "Combo : "	 .. stats.getStat("combo")
+	textWave = "Wave "	 .. stats.getStat("waveLevel")
 end
 
 function game.draw()
@@ -60,20 +67,17 @@ function game.draw()
 	missile.draw()
 	ship.draw()
 
-	textScore = "Score : " .. stats.score
-	textCombo = "Combo : "	 .. stats.combo
-	textWave = "Wave "	 .. stats.waveLevel
-
     love.graphics.print(textScore, 10, windowHeight - 20)
     love.graphics.print(textCombo, 10, windowHeight - 40)
     love.graphics.print(textWave, windowWidth - 100, windowHeight - 20)
 end
 
 function launchWave()
-	local meteorInWave = 3 + math.floor(stats.waveLevel / 3)
-	local minWordLength = math.min(3 + math.floor(stats.waveLevel / 5), dictionary.maxWordLength - 1)
+	local waveLevel = stats.getStat("waveLevel")
+	local meteorInWave = 3 + math.floor(waveLevel / 3)
+	local minWordLength = math.min(3 + math.floor(waveLevel/ 5), dictionary.maxWordLength - 1)
 	minWordLength = math.max(minWordLength, dictionary.minWordLength)
-	local maxWordLength = math.min(3 + math.floor(stats.waveLevel / 3), dictionary.maxWordLength)
+	local maxWordLength = math.min(3 + math.floor(waveLevel/ 3), dictionary.maxWordLength)
 	
 	--text=game.waveLevel  .. " : " .. meteorInWave .. " " .. minWordLength .. " " .. maxWordLength
 	
@@ -90,7 +94,7 @@ end
 function game.waveEnded()
 	meteor.reset()
 	missile.reset()
-	stats.waveLevel = stats.waveLevel + 1
+	stats.setStat("waveLevel", stats.getStat("waveLevel") + 1)
 	launchWave()
 end
 
@@ -98,14 +102,14 @@ function game.textinput(t)
     meteorId = meteor.onTexteEntered(t)
 
 	if (0 == meteorId) then
-		stats.bestCombo = math.max(stats.combo, stats.bestCombo)
-		stats.combo = 0
+		stats.setStat("bestCombo", math.max(stats.getStat("combo"), stats.getStat("bestCombo")))
+		stats.setStat("combo", 0)
 	else
-		stats.combo = stats.combo + 1
+		stats.setStat("combo", stats.getStat("combo") + 1)
 		ship.launchMissile(meteorId)
 		local res, meteorScore = meteor.consumeLetter(meteorId)
 		if (res == true) then
-			stats.score = stats.score + meteorScore
+			stats.setStat("score", stats.getStat("score") + meteorScore)
 		end
 	end
 end
