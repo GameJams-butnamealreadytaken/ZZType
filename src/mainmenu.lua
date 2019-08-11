@@ -23,10 +23,10 @@ function mainmenu.initialize()
 	textHelpClassic = "Infinite waves of words from dictionary"
 	
 	textTheme = "Theme"
-	textHelpTheme = "Classic mode adapted for theme (Unlikely Combinations)"
+	textHelpTheme = "Same that classic but..\nWTF are those unlikely combinations ??? :o"
 	
 	textCustom = "Custom"
-	textHelpCustom = "No waves, no pause, every words from a custom file in a row. Great to play with lyrics"
+	textHelpCustom = "No waves, every words from a custom file in a row.\nGreat to play with lyrics"
 	
 	currentHelpText = nil
 	
@@ -111,18 +111,21 @@ function mainmenu.mousepressed(x, y, button, istouch, presses)
 		
 		-- Classic
 		if (x < buttonX + scaledButtonHalfWidth and x > buttonX - scaledButtonHalfWidth and y < buttonY + scaledButtonHalfHeight and y > buttonY - scaledButtonHalfHeight) then
+			mode.classic = true; mode.theme = false; mode.custom = false
 			switchState(game)
 		end
 		
 		buttonY = buttonY + 50
 		-- Theme
 		if (x < buttonX + scaledButtonHalfWidth and x > buttonX - scaledButtonHalfWidth and y < buttonY + scaledButtonHalfHeight and y > buttonY - scaledButtonHalfHeight) then
+			mode.classic = false; mode.theme = true; mode.custom = false
 			switchState(game)
 		end
 		
 		buttonY = buttonY + 50
 		-- Custom
 		if (x < buttonX + scaledButtonHalfWidth and x > buttonX - scaledButtonHalfWidth and y < buttonY + scaledButtonHalfHeight and y > buttonY - scaledButtonHalfHeight) then
+			mode.classic = false; mode.theme = false; mode.custom = true
 			switchState(game)
 		end
 	end

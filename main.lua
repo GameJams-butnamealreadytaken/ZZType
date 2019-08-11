@@ -16,6 +16,12 @@ gameState =
 	game = false,
 	pause = false
 }
+mode =
+{
+	classic = true,
+	theme = false,
+	custom = false
+}
 
 local currentState = mainmenu
 

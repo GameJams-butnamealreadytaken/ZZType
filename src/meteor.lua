@@ -1,9 +1,9 @@
 meteor = {meteorCpt = 0, maxMeteorId = 0, speedFactor = 1, focusedId = 0}
 
-local meteorprites
+local meteorSprites, meteorSpritesTheme
 
 function meteor.initialize()
-	meteorprites = 
+	meteorSprites = 
 	{
 		{
 			love.graphics.newImage("resources/meteorBrown_tiny1.png"),
@@ -30,6 +30,35 @@ function meteor.initialize()
 			love.graphics.newImage("resources/meteorGrey_big4.png")
 		}
 	}
+	
+	meteorSpritesTheme = 
+	{
+		{
+			love.graphics.newImage("resources/meteorThemeRound_panda.png"),
+			love.graphics.newImage("resources/meteorThemeRound_pig.png"),
+			love.graphics.newImage("resources/meteorThemeRound_dog.png"),
+			love.graphics.newImage("resources/meteorThemeRound_giraffe.png"),
+			love.graphics.newImage("resources/meteorThemeRound_zebra.png"),
+			love.graphics.newImage("resources/meteorThemeRound_cow.png"),
+			love.graphics.newImage("resources/meteorThemeRound_moose.png"),
+			love.graphics.newImage("resources/meteorThemeRound_rhino.png"),
+			love.graphics.newImage("resources/meteorThemeRound_elephant.png"),
+			love.graphics.newImage("resources/meteorThemeRound_whale.png")
+		},
+		{
+			love.graphics.newImage("resources/meteorThemeSquare_panda.png"),
+			love.graphics.newImage("resources/meteorThemeSquare_pig.png"),
+			love.graphics.newImage("resources/meteorThemeSquare_dog.png"),
+			love.graphics.newImage("resources/meteorThemeSquare_giraffe.png"),
+			love.graphics.newImage("resources/meteorThemeSquare_zebra.png"),
+			love.graphics.newImage("resources/meteorThemeSquare_cow.png"),
+			love.graphics.newImage("resources/meteorThemeSquare_moose.png"),
+			love.graphics.newImage("resources/meteorThemeSquare_rhino.png"),
+			love.graphics.newImage("resources/meteorThemeSquare_elephant.png"),
+			love.graphics.newImage("resources/meteorThemeSquare_whale.png")
+		}
+	}
+	
 end
 
 function meteor.reset()
@@ -55,7 +84,7 @@ function meteor.create(minWordLength, maxWordLength)
 	local diry = vecy / vecLength
 	
 	-- angular factor
-	local angle = (love.math.random(0 ,2) - 1) / 100
+	local angle = (love.math.random(0 ,200) - 100) / 10000
 	
 	-- Get word
 	local wordSize = 0
@@ -67,20 +96,32 @@ function meteor.create(minWordLength, maxWordLength)
 	local text = dictionary[wordSize][wordId]
 
 	-- Get sprite based on word length
+	local texty
 	local spriteType = love.math.random(1, 2)
-	local spriteMin, spriteMax
-	if (#text < 5) then
-		spriteMin, spriteMax = 1, 2
-	elseif (#text < 7) then
-		spriteMin, spriteMax = 3, 4
-	elseif (#text < 9) then
-		spriteMin, spriteMax = 5, 6
+	local spriteSpriteId
+	local sprite
+	if (mode.theme == true) then
+		spriteSpriteId = love.math.random(1, 10)
+		sprite = meteorSpritesTheme[spriteType][spriteSpriteId]
+		
+		texty = y + sprite:getHeight() - sprite:getHeight() / 4
 	else
-		spriteMin, spriteMax = 7, 10
-	end
+		local spriteMin, spriteMax
+		if (#text < 5) then
+			spriteMin, spriteMax = 1, 2
+		elseif (#text < 7) then
+			spriteMin, spriteMax = 3, 4
+		elseif (#text < 9) then
+			spriteMin, spriteMax = 5, 6
+		else
+			spriteMin, spriteMax = 7, 10
+		end
 	
-	local spriteSpriteId = love.math.random(spriteMin, spriteMax)
-	local sprite = meteorprites[spriteType][spriteSpriteId]
+		spriteSpriteId = love.math.random(spriteMin, spriteMax)
+		sprite = meteorSprites[spriteType][spriteSpriteId]
+		
+		texty = y + sprite:getHeight()
+	end
 
 	meteor.maxMeteorId = meteor.maxMeteorId + 1
 	meteor.meteorCpt = meteor.meteorCpt + 1
@@ -94,8 +135,8 @@ function meteor.create(minWordLength, maxWordLength)
 		curAngle = 0,
 		lifePoint = #text,
 		text = text,
-		textx = (x - (love.graphics.getFont():getWidth(text) / 2)) + (sprite:getWidth() / 2),
-		texty = y + sprite:getHeight(),
+		textx = (x - (defaultFont:getWidth(text) / 2)) + (sprite:getWidth() / 2),
+		texty = texty,
 		dirx = dirx, 
 		diry = diry,
 		score = spriteSpriteId * 10,
@@ -132,7 +173,11 @@ end
 function meteor.draw()
 	for i = 1, meteor.maxMeteorId do
 		if (meteor[i] ~= nil ) then
-			love.graphics.draw(meteor[i].sprite, meteor[i].x, meteor[i].y, meteor[i].curAngle, 1, 1, meteor[i].sprite:getWidth() / 2, meteor[i].sprite:getHeight() / 2)
+			if (mode.theme == true) then
+				love.graphics.draw(meteor[i].sprite, meteor[i].x, meteor[i].y, meteor[i].curAngle, 0.4, 0.4, meteor[i].sprite:getWidth() / 2, meteor[i].sprite:getHeight() / 2)
+			else
+				love.graphics.draw(meteor[i].sprite, meteor[i].x, meteor[i].y, meteor[i].curAngle, 1, 1, meteor[i].sprite:getWidth() / 2, meteor[i].sprite:getHeight() / 2)
+			end
 		end
 	end
 			
@@ -144,7 +189,8 @@ function meteor.draw()
 				love.graphics.setColor(255,0,0)
 			end
 			-- Have to offset text location because of offset applied on sprite for rotation
-			love.graphics.print(meteor[i].text, meteor[i].textx - meteor[i].sprite:getWidth() / 2, meteor[i].texty - meteor[i].sprite:getHeight() / 2, 0, 1, 1, defaultFont:getWidth(meteor[i].text) / 2, defaultFont:getHeight(meteor[i].text) / 2)
+			--love.graphics.print(meteor[i].text, meteor[i].textx - meteor[i].sprite:getWidth() / 2, meteor[i].texty - meteor[i].sprite:getHeight() / 2, 0, 1, 1, defaultFont:getWidth(meteor[i].text) / 2, defaultFont:getHeight(meteor[i].text) / 2)
+			love.graphics.print(meteor[i].text, meteor[i].textx - meteor[i].sprite:getWidth() / 2, meteor[i].texty - meteor[i].sprite:getHeight() / 2, 0, 1, 1)
 			--love.graphics.print(i, meteor[i].textx, meteor[i].texty + 10)
 			if (meteor.focusedId == i) then
 				love.graphics.setColor(255,255,255)

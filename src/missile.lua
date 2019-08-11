@@ -1,12 +1,13 @@
 missile = { missileCpt = 0, maxMissileId = 0, speedFactor = 5}
 
-local missileSprite
-local explosionSprite
+local missileSprite, missileSpriteTheme
+local explosionSprite, explosionSpriteTheme, explosionCurrent
 local launchSound
 local hitSound
 
 function missile.initialize()
     missileSprite = love.graphics.newImage("resources/spaceMissile.png")
+    missileSpriteTheme = love.graphics.newImage("resources/spaceMissileTheme.png")
     
 	explosionSprite = 
 	{
@@ -17,8 +18,27 @@ function missile.initialize()
 		love.graphics.newImage("resources/explosion5.png")
 	}
 	
-	launchSound = love.audio.newSource("resources/missile_launch.wav", "static")
-	hitSound = love.audio.newSource("resources/missile_hit.wav", "static")
+	explosionSpriteTheme = 
+	{
+		love.graphics.newImage("resources/explosionTheme1.png"),
+		love.graphics.newImage("resources/explosionTheme2.png"),
+		love.graphics.newImage("resources/explosionTheme3.png"),
+		love.graphics.newImage("resources/explosionTheme4.png"),
+	}
+end
+
+function missile.play()
+	if (mode.theme == true) then
+		explosionCurrent = explosionSpriteTheme
+		
+		launchSound = love.audio.newSource("resources/missile_launchTheme.wav", "static")
+		hitSound = love.audio.newSource("resources/missile_hitTheme.wav", "static")
+	else
+		explosionCurrent = explosionSprite
+		
+		launchSound = love.audio.newSource("resources/missile_launch.wav", "static")
+		hitSound = love.audio.newSource("resources/missile_hit.wav", "static")
+	end
 end
 
 function missile.reset()
@@ -35,7 +55,27 @@ end
 function missile.launch(startx, starty, meteorId)
 	missile.missileCpt = missile.missileCpt + 1	
 	missile.maxMissileId = missile.maxMissileId + 1
-	missile[missile.maxMissileId] = { sprite = missileSprite, x = startx, y = starty, angle = 0, meteorId = meteorId, explode = false, explosionDt = 0, exploSprite = explosionSprite[1], explosionCpt = 1, launchSound = launchSound:play()}
+	
+	local sprite
+	local exploSprite
+	if (mode.theme == true) then
+		sprite = missileSpriteTheme
+	else
+		sprite = missileSprite
+	end
+	missile[missile.maxMissileId] = 
+	{ 
+		sprite = sprite, 
+		x = startx, 
+		y = starty, 
+		angle = 0, 
+		meteorId = meteorId, 
+		explode = false, 
+		explosionDt = 0, 
+		exploSprite = explosionCurrent[1], 
+		explosionCpt = 1,
+		launchSound = launchSound:play()
+	}
 end
 
 function missile.update(dt)
@@ -50,14 +90,14 @@ function missile.update(dt)
 				if (missile[i].explosionDt > 0.1) then
 					missile[i].explosionDt = 0
 					missile[i].explosionCpt = missile[i].explosionCpt + 1
-					if (missile[i].explosionCpt > 5) then
+					if (missile[i].explosionCpt > #explosionCurrent) then
 						-- Exploded, deal damage to meteor and check if dead
 						if (targetMeteor.lifePoint == 0) then
 							if (meteor.removeMeteor(missile[i].meteorId) == true) then return end
 						end
 						removeMissile(i)
 					else
-						missile[i].exploSprite = explosionSprite[missile[i].explosionCpt]
+						missile[i].exploSprite = explosionCurrent[missile[i].explosionCpt]
 					end
 				end
 			else

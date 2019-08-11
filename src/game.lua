@@ -6,27 +6,22 @@ meteor = require 'src/meteor'
 
 dictionary  = require 'src/dictionary'
 
-mode =
-{
-	classic = true,
-	theme = false,
-	custom = false
-}
-
 local textScore = ""
 local textCombo = ""
 local textWave = ""
 
 function game.initialize()
 	dictionary.initialize()
-
+	
 	ship.initialize()
 	meteor.initialize()
 	missile.initialize()
-
  end
 
 function game.play()
+	ship.play()
+	missile.play()
+	
 	score = 0
 	combo = 0
 	waveLevel = 1
@@ -47,7 +42,6 @@ function game.update(dt)
 end
 
 function game.draw()
-	gameBackground.draw()
 	meteor.draw()
 	missile.draw()
 	ship.draw()
@@ -105,6 +99,8 @@ end
 function game.keypressed(key)
 	if key == "space" then	
 		game.waveEnded()
+	elseif key == "escape" then
+		game.takeDamage()
 	elseif key == "backspace" then
 		meteor.focusedId = 0
 	end

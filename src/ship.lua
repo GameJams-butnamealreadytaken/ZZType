@@ -1,13 +1,23 @@
 ship = { focusedMeteorId = 0 }
 
-local shipSprite, x, y, missileOffset
+local shipSprite, shipSpriteTheme
+local x, y, missileOffset
 
 function ship.initialize()
-    shipSprite = love.graphics.newImage("resources/ship.png")
-	x = (windowWidth / 2) - shipSprite:getWidth() / 4 -- / 4 because of scale
-	y = windowHeight - 50
-	
-	missileOffset = 15
+	shipSpriteTheme = love.graphics.newImage("resources/ship_theme.png")
+	shipSprite = love.graphics.newImage("resources/ship.png")
+end
+
+function ship.play()
+	if (mode.theme == true) then
+		x = (windowWidth / 2) - shipSprite:getWidth() / 4
+		y = windowHeight - 90
+		missileOffset = 0
+	else
+		x = (windowWidth / 2) - shipSprite:getWidth() / 4 -- / 4 because of scale
+		y = windowHeight - 50
+		missileOffset = 15
+	end
 end
 
 function ship.launchMissile(meteorId)
@@ -16,7 +26,11 @@ function ship.launchMissile(meteorId)
 end
 
 function ship.draw()
-    love.graphics.draw(shipSprite, x, y, 0, 0.5, 0.5)
+	if (mode.theme == true) then
+		love.graphics.draw(shipSpriteTheme, x, y, 0, 0.75, 0.75)
+	else
+		love.graphics.draw(shipSprite, x, y, 0, 0.5, 0.5)
+	end
 end
 
 return ship
