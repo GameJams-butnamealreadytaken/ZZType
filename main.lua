@@ -62,7 +62,7 @@ function love.load()
 	love.filesystem.setIdentity("ZZType")
 
     num = 0
-	textdbg = "ntm"
+	textdbg = ""
 
 	defaultFont = love.graphics.getFont()
 	futurFontTiny = love.graphics.newFont("resources/Kenney_Rocket_Square.ttf", 7) 
