@@ -67,6 +67,7 @@ function meteor.reset()
 	end
 	meteor.meteorCpt = 0
 	meteor.maxMeteorId = 0
+	meteor.focusedId = 0
 end
 
 -- Create a new meteor

@@ -54,7 +54,10 @@ end
 
 function missile.reset()
 	for i = 1, missile.maxMissileId do
-		missile[i] = nil
+		if (missile[i] ~= nil) then
+			missile[i].launchSound:stop()
+			missile[i] = nil
+		end
 	end
 	missile.missileCpt = 0
 	missile.maxMissileId = 0

@@ -1,3 +1,4 @@
+love2dAudioPlay = love.audio.play -- slam can not deal with love2d 11.0 play method which can take table of sources
 require 'src/slam' -- https://github.com/vrld/slam
 
 gameBackground = require 'src/background'
@@ -44,6 +45,7 @@ mode =
 }
 
 local currentState = mainmenu
+local pausedAudioSources = nil
 
 windowWidth = 512
 windowHeight = 836
@@ -100,7 +102,14 @@ function love.draw()
 end
 
 function love.focus(f) 
-    gameIsPaused = not f 
+    gameIsPaused = not f
+	if (gameIsPaused == true) then
+		pausedAudioSources = love.audio.pause()
+	else
+		if (pausedAudioSources ~= nil) then
+			love2dAudioPlay(pausedAudioSources)
+		end
+	end
 end
 
 function love.quit()
