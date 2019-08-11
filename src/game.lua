@@ -1,4 +1,4 @@
-game = { state = "game", score = 0, bestScore = 0, combo = 0, bestCombo = 0, waveLevel = 1}
+game = { state = "game"}
 
 ship = require 'src/ship'
 missile = require 'src/missile'
@@ -27,15 +27,16 @@ function game.initialize()
  end
 
 function game.play()
-	game.score = 0
-	game.combo = 0
-	game.waveLevel = 1
+	score = 0
+	combo = 0
+	waveLevel = 1
 	launchWave()
 end
 
 function game.stop()
-	game.bestCombo = math.max(game.combo, game.bestCombo)
-	game.bestScore = math.max(game.score, game.bestScore)
+	bestCombo = math.max(combo, bestCombo)
+	bestScore = math.max(score, bestScore)
+	bestWave = math.max(waveLevel, bestWave)
 	meteor.reset()
 	missile.reset()
 end
@@ -51,9 +52,9 @@ function game.draw()
 	missile.draw()
 	ship.draw()
 
-	textScore = "Score : " .. game.score
-	textCombo = "Combo : "	 .. game.combo
-	textWave = "Wave "	 .. game.waveLevel
+	textScore = "Score : " .. score
+	textCombo = "Combo : "	 .. combo
+	textWave = "Wave "	 .. waveLevel
 
     love.graphics.print(textScore, 10, windowHeight - 20)
     love.graphics.print(textCombo, 10, windowHeight - 40)
@@ -61,10 +62,10 @@ function game.draw()
 end
 
 function launchWave()
-	local meteorInWave = 3 + math.floor(game.waveLevel / 3)
-	local minWordLength = math.min(3 + math.floor(game.waveLevel / 5), dictionary.maxWordLength - 1)
+	local meteorInWave = 3 + math.floor(waveLevel / 3)
+	local minWordLength = math.min(3 + math.floor(waveLevel / 5), dictionary.maxWordLength - 1)
 	minWordLength = math.max(minWordLength, dictionary.minWordLength)
-	local maxWordLength = math.min(3 + math.floor(game.waveLevel / 3), dictionary.maxWordLength)
+	local maxWordLength = math.min(3 + math.floor(waveLevel / 3), dictionary.maxWordLength)
 	
 	--text=game.waveLevel  .. " : " .. meteorInWave .. " " .. minWordLength .. " " .. maxWordLength
 	
@@ -81,7 +82,7 @@ end
 function game.waveEnded()
 	meteor.reset()
 	missile.reset()
-	game.waveLevel = game.waveLevel + 1
+	waveLevel = waveLevel + 1
 	launchWave()
 end
 
@@ -89,14 +90,14 @@ function game.textinput(t)
     meteorId = meteor.onTexteEntered(t)
 
 	if (0 == meteorId) then
-		game.bestCombo = math.max(game.combo, game.bestCombo)
-		game.combo = 0
+		bestCombo = math.max(combo, bestCombo)
+		combo = 0
 	else
-		game.combo = game.combo + 1
+		combo = combo + 1
 		ship.launchMissile(meteorId)
-		local res, score = meteor.consumeLetter(meteorId)
+		local res, meteorScore = meteor.consumeLetter(meteorId)
 		if (res == true) then
-			game.score = game.score + score
+			score = score + meteorScore
 		end
 	end
 end

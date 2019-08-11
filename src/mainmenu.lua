@@ -9,7 +9,8 @@ local textCustom, textHelpCustom
 local currentHelpText
 
 local textBestScore, textLastScore
-local textMaxCombo
+local textBestCombo
+local textBestWave, textLastWave
 
 local cursorAngle, cursorAngleFactor, cursorSprite, cursorX, cursorY = 0, 0.1
 
@@ -29,18 +30,22 @@ function mainmenu.initialize()
 	
 	currentHelpText = nil
 	
-	textBestScore = "Best Score: 0"
-	textLastScore = "Last Score: 0"
-	textMaxCombo = "Max Combo: 0"
+	textBestScore = "Best Score: " .. bestScore
+	textLastScore = "Last Score: " .. score
+	textBestWave = "Best Wave: " .. bestWave
+	textLastWave = "Last Wave: " .. waveLevel
+	textBestCombo = "Best Combo: " .. bestCombo
 	
 	cursorSprite = love.graphics.newImage("resources/cursor.png")
 	cursorX, cursorY = love.mouse.getPosition()
  end
  
 function mainmenu.play()
-	textBestScore = "Best Score: " .. game.bestScore
-	textLastScore = "Last Score: " .. game.score
-	textMaxCombo = "Max Combo: " .. game.bestCombo
+	textBestScore = "Best Score: " .. bestScore
+	textLastScore = "Last Score: " .. score
+	textBestWave = "Best Wave: " .. bestWave
+	textLastWave = "Last Wave: " .. waveLevel
+	textBestCombo = "Best Combo: " .. bestCombo
 end
 
 function mainmenu.stop()
@@ -48,6 +53,7 @@ function mainmenu.stop()
 end
  
 function mainmenu.update(dt)
+	--TODO update cursor location to rotate around mouse location
 	--cursorAngle = cursorAngle + cursorAngleFactor
 end
 
@@ -74,20 +80,23 @@ function mainmenu.draw()
 	love.graphics.draw(buttonSprite, x, y, 0, 2, 0.3, buttonSprite:getWidth() / 2, buttonSprite:getHeight() / 2)
 	love.graphics.print(textCustom, x, y, 0, 1, 1, futurFont:getWidth(textCustom) / 2, futurFont:getHeight(textCustom) / 2)
 
-	y = y + 100
+	y = y + 50
 	if (currentHelpText ~= nil) then
 		--love.graphics.print(currentHelpText, x, y, 0, 1, 1, futurFont:getWidth(currentHelpText) / 2, futurFont:getHeight(currentHelpText) / 2)
 		love.graphics.printf(currentHelpText, x, y, 400, "center", 0, 1, 1, 200)
 	end
 	
-	y = y + 100
+	y = y + 125
 	love.graphics.print(textBestScore, x, y, 0, 1, 1, futurFont:getWidth(textBestScore) / 2, futurFont:getHeight(textBestScore) / 2)
 	y = y + 25
 	love.graphics.print(textLastScore, x, y, 0, 1, 1, futurFont:getWidth(textLastScore) / 2, futurFont:getHeight(textLastScore) / 2)
 	y = y + 25
-	love.graphics.print(textMaxCombo, x, y, 0, 1, 1, futurFont:getWidth(textMaxCombo) / 2, futurFont:getHeight(textMaxCombo) / 2)
+	love.graphics.print(textBestWave, x, y, 0, 1, 1, futurFont:getWidth(textBestWave) / 2, futurFont:getHeight(textBestWave) / 2)
+	y = y + 25
+	love.graphics.print(textLastWave, x, y, 0, 1, 1, futurFont:getWidth(textLastWave) / 2, futurFont:getHeight(textLastWave) / 2)
+	y = y + 25
+	love.graphics.print(textBestCombo, x, y, 0, 1, 1, futurFont:getWidth(textBestCombo) / 2, futurFont:getHeight(textMaxCombo) / 2)
 
-	
 	-- Cursor
 	x, y = love.mouse.getPosition()
     love.graphics.draw(cursorSprite, x, y, cursorAngle, 0.5, 0.5)
