@@ -117,6 +117,10 @@ end
 
 function love.mousepressed(x, y, button, istouch, presses)
 	currentState.mousepressed(x, y, button, istouch, presses)
+	
+	if (button == 2) then
+		background.reroll()
+	end
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
