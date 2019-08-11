@@ -49,7 +49,7 @@ function mainmenu.play()
 end
 
 function mainmenu.stop()
-	-- do smthg
+	currentHelpText = nil
 end
  
 function mainmenu.update(dt)

@@ -2,6 +2,8 @@ missile = { missileCpt = 0, maxMissileId = 0, speedFactor = 5}
 
 local missileSprite
 local explosionSprite
+local launchSound
+local hitSound
 
 function missile.initialize()
     missileSprite = love.graphics.newImage("resources/spaceMissile.png")
@@ -14,6 +16,9 @@ function missile.initialize()
 		love.graphics.newImage("resources/explosion4.png"),
 		love.graphics.newImage("resources/explosion5.png")
 	}
+	
+	launchSound = love.audio.newSource("resources/missile_launch.wav", "static")
+	hitSound = love.audio.newSource("resources/missile_hit.wav", "static")
 end
 
 function missile.reset()
@@ -22,12 +27,15 @@ function missile.reset()
 	end
 	missile.missileCpt = 0
 	missile.maxMissileId = 0
+	
+	launchSound:stop()
+	hitSound:stop()
 end
 
 function missile.launch(startx, starty, meteorId)
 	missile.missileCpt = missile.missileCpt + 1	
 	missile.maxMissileId = missile.maxMissileId + 1
-	missile[missile.maxMissileId] = { sprite = missileSprite, x = startx, y = starty, angle = 0, meteorId = meteorId, explode = false, explosionDt = 0, exploSprite = explosionSprite[1], explosionCpt = 1}
+	missile[missile.maxMissileId] = { sprite = missileSprite, x = startx, y = starty, angle = 0, meteorId = meteorId, explode = false, explosionDt = 0, exploSprite = explosionSprite[1], explosionCpt = 1, launchSound = launchSound:play()}
 end
 
 function missile.update(dt)
@@ -71,6 +79,8 @@ function missile.update(dt)
 
 				-- Reached its meteore
 				if (vecLength < 5) then
+					missile[i].launchSound:stop()
+					hitSound:play()
 					missile[i].explode = true
 					if (targetMeteor.lifePoint == 1) then
 						-- Last meteor life point, stop moving it

@@ -1,3 +1,5 @@
+require 'src/Slam' -- https://github.com/vrld/slam
+
 gameBackground = require 'src/background'
 game = require 'src/game'
 mainmenu = require 'src/mainmenu'
