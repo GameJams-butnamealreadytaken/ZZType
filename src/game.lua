@@ -6,11 +6,16 @@ meteor = require 'src/meteor'
 
 dictionary  = require 'src/dictionary'
 
+local musicTheme
+
 local textScore = ""
 local textCombo = ""
 local textWave = ""
 
 function game.initialize()
+	musicTheme = love.audio.newSource('resources/musicGameTheme.wav', 'stream')
+	musicTheme:setLooping(true)
+
 	dictionary.initialize()
 	
 	ship.initialize()
@@ -19,6 +24,14 @@ function game.initialize()
  end
 
 function game.play()
+	if (mode.theme == true) then
+		love.audio.stop()
+		musicTheme:play()
+	else
+		if (love.audio.getActiveSourceCount() == 0) then
+			mainmenu.music:play()
+		end
+	end
 	ship.play()
 	missile.play()
 	
@@ -29,6 +42,7 @@ function game.play()
 end
 
 function game.stop()
+	musicTheme:stop()
 	bestCombo = math.max(combo, bestCombo)
 	bestScore = math.max(score, bestScore)
 	bestWave = math.max(waveLevel, bestWave)

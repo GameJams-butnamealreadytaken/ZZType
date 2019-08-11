@@ -2,8 +2,8 @@ missile = { missileCpt = 0, maxMissileId = 0, speedFactor = 5}
 
 local missileSprite, missileSpriteTheme
 local explosionSprite, explosionSpriteTheme, explosionCurrent
-local launchSound
-local hitSound
+local launchSound, launchSoundTheme, usedLaunchSound
+local hitSound, hitSoundTheme, usedHitSound
 
 function missile.initialize()
     missileSprite = love.graphics.newImage("resources/spaceMissile.png")
@@ -25,19 +25,30 @@ function missile.initialize()
 		love.graphics.newImage("resources/explosionTheme3.png"),
 		love.graphics.newImage("resources/explosionTheme4.png"),
 	}
+
+	launchSound = love.audio.newSource("resources/missile_launch.wav", "static")
+	hitSound = love.audio.newSource("resources/missile_hit.wav", "static")
+	
+	launchSoundTheme = love.audio.newSource("resources/missile_launchTheme.wav", "static")
+	hitSoundTheme = love.audio.newSource("resources/missile_hitTheme.wav", "static")	
+	
+	launchSound:setVolume(.5)
+	launchSoundTheme:setVolume(.5)
+	hitSound:setVolume(.5)
+	hitSoundTheme:setVolume(1)
 end
 
 function missile.play()
 	if (mode.theme == true) then
 		explosionCurrent = explosionSpriteTheme
 		
-		launchSound = love.audio.newSource("resources/missile_launchTheme.wav", "static")
-		hitSound = love.audio.newSource("resources/missile_hitTheme.wav", "static")
+		usedLaunchSound = launchSoundTheme
+		usedHitSound = hitSoundTheme
 	else
 		explosionCurrent = explosionSprite
 		
-		launchSound = love.audio.newSource("resources/missile_launch.wav", "static")
-		hitSound = love.audio.newSource("resources/missile_hit.wav", "static")
+		usedLaunchSound = launchSound
+		usedHitSound = hitSound
 	end
 end
 
@@ -48,8 +59,8 @@ function missile.reset()
 	missile.missileCpt = 0
 	missile.maxMissileId = 0
 	
-	launchSound:stop()
-	hitSound:stop()
+	usedLaunchSound:stop()
+	usedHitSound:stop()
 end
 
 function missile.launch(startx, starty, meteorId)
@@ -74,7 +85,7 @@ function missile.launch(startx, starty, meteorId)
 		explosionDt = 0, 
 		exploSprite = explosionCurrent[1], 
 		explosionCpt = 1,
-		launchSound = launchSound:play()
+		launchSound = usedLaunchSound:play()
 	}
 end
 
@@ -120,7 +131,7 @@ function missile.update(dt)
 				-- Reached its meteore
 				if (vecLength < 5) then
 					missile[i].launchSound:stop()
-					hitSound:play()
+					usedHitSound:play()
 					missile[i].explode = true
 					if (targetMeteor.lifePoint == 1) then
 						-- Last meteor life point, stop moving it

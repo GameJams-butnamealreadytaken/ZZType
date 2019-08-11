@@ -1,4 +1,4 @@
-require 'src/Slam' -- https://github.com/vrld/slam
+require 'src/slam' -- https://github.com/vrld/slam
 
 gameBackground = require 'src/background'
 game = require 'src/game'
@@ -25,7 +25,7 @@ mode =
 
 local currentState = mainmenu
 
-windowWidth = 514
+windowWidth = 512
 windowHeight = 836
 
 function switchState(newState)
@@ -56,7 +56,9 @@ function love.load()
 
 	mainmenu.initialize()
 	game.initialize()
-
+	
+	currentState.play()
+	
 	textdbg = dictionary.maxWordLength
  end
 

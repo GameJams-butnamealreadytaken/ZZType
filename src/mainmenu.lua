@@ -1,7 +1,10 @@
-mainmenu = { state = "mainmenu"}
+mainmenu = { state = "mainmenu", music = nil}
 
 local title
 local buttonSprite
+
+local musicEasterEgg
+local musicEasterEggPlayed = false
 
 local textClassic, textHelpClassic
 local textTheme, textHelpTheme
@@ -17,30 +20,32 @@ local cursorAngle, cursorAngleFactor, cursorSprite, cursorX, cursorY = 0, 0.1
 function mainmenu.initialize()
 	title = "ZZType"
 
+	mainmenu.music = love.audio.newSource('resources/musicMenuMercury.mp3', 'stream')
+	mainmenu.music:setLooping(true)
+	musicEasterEgg = love.audio.newSource('resources/ZZ Top - La Grange.mp3', 'stream')
+	
 	buttonSprite = love.graphics.newImage("resources/button.png")
 	
 	textClassic = "Classic"
 	textHelpClassic = "Infinite waves of words from dictionary"
 	
 	textTheme = "Theme"
-	textHelpTheme = "Same that classic but..\nWTF are those unlikely combinations ??? :o"
+	textHelpTheme = "Same that classic but..\nWTF are those unlikely combinations of assets ??? :o"
 	
 	textCustom = "Custom"
-	textHelpCustom = "No waves, every words from a custom file in a row.\nGreat to play with lyrics"
+	textHelpCustom = "No waves, every words from a custom file in a row.\nGreat to play with lyrics\n(wip)"
 	
 	currentHelpText = nil
-	
-	textBestScore = "Best Score: " .. bestScore
-	textLastScore = "Last Score: " .. score
-	textBestWave = "Best Wave: " .. bestWave
-	textLastWave = "Last Wave: " .. waveLevel
-	textBestCombo = "Best Combo: " .. bestCombo
 	
 	cursorSprite = love.graphics.newImage("resources/cursor.png")
 	cursorX, cursorY = love.mouse.getPosition()
  end
  
 function mainmenu.play()
+	if (love.audio.getActiveSourceCount() == 0) then
+		mainmenu.music:play()
+	end
+	
 	textBestScore = "Best Score: " .. bestScore
 	textLastScore = "Last Score: " .. score
 	textBestWave = "Best Wave: " .. bestWave
@@ -49,10 +54,21 @@ function mainmenu.play()
 end
 
 function mainmenu.stop()
+	musicEasterEgg:stop()
+	if (mode.theme == true) then
+		mainmenu.music:stop()
+	end
+	
 	currentHelpText = nil
 end
  
 function mainmenu.update(dt)
+	if (musicEasterEggPlayed == true) then
+		if (love.audio.getActiveSourceCount() == 0) then
+			musicEasterEggPlayed = false
+			music:play()
+		end
+	end
 	--TODO update cursor location to rotate around mouse location
 	--cursorAngle = cursorAngle + cursorAngleFactor
 end
@@ -105,14 +121,24 @@ end
 function mainmenu.mousepressed(x, y, button, istouch, presses)
 	if (button == 1) then
 		local buttonX = windowWidth / 2
-		local buttonY = windowHeight / 4 + 150
+		local buttonY = windowHeight / 4
 		local scaledButtonHalfWidth = (buttonSprite:getWidth() * 2) / 2
 		local scaledButtonHalfHeight = (buttonSprite:getHeight() * 0.3) / 2
+				
+		-- Title Easter Egg
+		if (x < buttonX + futurFontHuge:getWidth(title) / 2 and x > buttonX - futurFontHuge:getWidth(title) / 2 and y < buttonY + futurFontHuge:getHeight(title) / 2 and y > buttonY - futurFontHuge:getHeight(title) / 2) then
+			love.audio.stop()
+			musicEasterEgg:play()
+			musicEasterEggPlayed = true
+			return
+		end
 		
+		buttonY = buttonY + 150
 		-- Classic
 		if (x < buttonX + scaledButtonHalfWidth and x > buttonX - scaledButtonHalfWidth and y < buttonY + scaledButtonHalfHeight and y > buttonY - scaledButtonHalfHeight) then
 			mode.classic = true; mode.theme = false; mode.custom = false
 			switchState(game)
+			return
 		end
 		
 		buttonY = buttonY + 50
@@ -120,6 +146,7 @@ function mainmenu.mousepressed(x, y, button, istouch, presses)
 		if (x < buttonX + scaledButtonHalfWidth and x > buttonX - scaledButtonHalfWidth and y < buttonY + scaledButtonHalfHeight and y > buttonY - scaledButtonHalfHeight) then
 			mode.classic = false; mode.theme = true; mode.custom = false
 			switchState(game)
+			return
 		end
 		
 		buttonY = buttonY + 50
@@ -127,7 +154,8 @@ function mainmenu.mousepressed(x, y, button, istouch, presses)
 		if (x < buttonX + scaledButtonHalfWidth and x > buttonX - scaledButtonHalfWidth and y < buttonY + scaledButtonHalfHeight and y > buttonY - scaledButtonHalfHeight) then
 			mode.classic = false; mode.theme = false; mode.custom = true
 			switchState(game)
-		end
+			return
+		end		
 	end
 end
 

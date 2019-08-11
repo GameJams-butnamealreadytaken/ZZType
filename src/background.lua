@@ -4,9 +4,16 @@ local backgroundSprite
 local spriteWidth
 local spriteHeight
 
-function background.initialize()	
-	backgroundSprite = love.graphics.newImage("resources/background_black.png")
-	
+function background.initialize()
+	rand = love.math.random(1, 3)
+	if (rand == 1) then
+		backgroundSprite = love.graphics.newImage("resources/background_purple.png")
+	elseif (rand == 2) then	
+		backgroundSprite = love.graphics.newImage("resources/background_black.png")
+	else
+		backgroundSprite = love.graphics.newImage("resources/background_blue.png")
+	end
+
 	spriteWidth = backgroundSprite:getWidth()
 	spriteHeight = backgroundSprite:getHeight()
 end
