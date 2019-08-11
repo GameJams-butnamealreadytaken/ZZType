@@ -46,11 +46,11 @@ function mainmenu.play()
 		mainmenu.music:play()
 	end
 	
-	textBestScore = "Best Score: " .. bestScore
-	textLastScore = "Last Score: " .. score
-	textBestWave = "Best Wave: " .. bestWave
-	textLastWave = "Last Wave: " .. waveLevel
-	textBestCombo = "Best Combo: " .. bestCombo
+	textBestScore = "Best Score: " .. stats.bestScore
+	textLastScore = "Last Score: " .. stats.score
+	textBestWave = "Best Wave: " .. stats.bestWave
+	textLastWave = "Last Wave: " .. stats.waveLevel
+	textBestCombo = "Best Combo: " .. stats.bestCombo
 end
 
 function mainmenu.stop()

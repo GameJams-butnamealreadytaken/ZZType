@@ -8,8 +8,27 @@ mainmenu = require 'src/mainmenu'
 defaultFont, futurFontTiny, futurFont, futurFontHuge = nil
 
 -- Stats
-score, bestScore, combo, bestCombo, waveLevel, bestWave = 0, 0, 0, 0, 0, 0
-
+stats = 
+{
+	score = 0,
+	bestScore = 0, 
+	combo = 0, 
+	bestCombo = 0, 
+	waveLevel = 0, 
+	bestWave = 0,
+	
+	scoreTheme = 0,
+	bestScoreTheme = 0, 
+	comboTheme = 0, 
+	bestComboTheme = 0, 
+	waveLevelTheme = 0, 
+	bestWaveTheme = 0,
+	
+	scoreCustom = 0,
+	bestScoreCustom = 0, 
+	comboCustom = 0, 
+	bestComboCustom = 0, 
+}
 gameState = 
 {
 	mainmenu = true,
@@ -110,8 +129,8 @@ function loadStats()
 		saveStats()
 	end
 	
-	stats = love.filesystem.load(fileName)
-	stats()
+	loadedStats = love.filesystem.load(fileName)
+	loadedStats()
 end
 
 function saveStats()	
@@ -120,12 +139,24 @@ function saveStats()
 		love.filesystem.newFile(fileName)
 	end
 	
-    save = "score = " .. score
-    save = save.. ";bestScore = " .. bestScore
-    save = save.. ";combo = " .. combo
-    save = save.. ";bestCombo = " .. bestCombo
-    save = save.. ";waveLevel = " .. waveLevel
-    save = save.. ";bestWave = " .. bestWave
+    save = "stats.score = " .. stats.score
+    save = save.. ";stats.bestScore = " .. stats.bestScore
+    save = save.. ";stats.combo = " .. stats.combo
+    save = save.. ";stats.bestCombo = " .. stats.bestCombo
+    save = save.. ";stats.waveLevel = " .. stats.waveLevel
+    save = save.. ";stats.bestWave = " .. stats.bestWave
+
+    save = save.. ";stats.scoreTheme = " .. stats.scoreTheme
+    save = save.. ";stats.bestScoreTheme = " .. stats.bestScoreTheme
+    save = save.. ";stats.comboTheme = " .. stats.comboTheme
+    save = save.. ";stats.bestComboTheme = " .. stats.bestComboTheme
+    save = save.. ";stats.waveLevelTheme = " .. stats.waveLevelTheme
+    save = save.. ";stats.bestWaveTheme = " .. stats.bestWaveTheme
+	
+    save = save.. ";stats.scoreCustom = " .. stats.scoreCustom
+    save = save.. ";stats.bestScoreCustom = " .. stats.bestScoreCustom
+    save = save.. ";stats.comboCustom = " .. stats.comboCustom
+    save = save.. ";stats.bestComboCustom = " .. stats.bestComboCustom
 	
     love.filesystem.write(fileName, save)
 end

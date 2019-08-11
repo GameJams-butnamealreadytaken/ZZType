@@ -32,9 +32,9 @@ function missile.initialize()
 	launchSoundTheme = love.audio.newSource("resources/missile_launchTheme.wav", "static")
 	hitSoundTheme = love.audio.newSource("resources/missile_hitTheme.wav", "static")	
 	
-	launchSound:setVolume(.5)
-	launchSoundTheme:setVolume(.5)
-	hitSound:setVolume(.5)
+	launchSound:setVolume(.3)
+	launchSoundTheme:setVolume(.3)
+	hitSound:setVolume(.3)
 	hitSoundTheme:setVolume(1)
 end
 
