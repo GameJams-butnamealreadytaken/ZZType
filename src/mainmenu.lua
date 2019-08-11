@@ -11,7 +11,7 @@ local textTheme, textHelpTheme
 local textCustom, textHelpCustom
 local currentHelpText
 
-local cursorAngle, cursorAngleFactor, cursorSprite, cursorX, cursorY = 0, 0.1
+local cursorAngle, cursorAngleFactor, cursorSprite, cursorX, cursorY = 0, 0.01
 
 function mainmenu.initialize()
 	title = "ZZType"
@@ -61,8 +61,8 @@ function mainmenu.update(dt)
 			music:play()
 		end
 	end
-	--TODO update cursor location to rotate around mouse location
-	--cursorAngle = cursorAngle + cursorAngleFactor
+	
+	cursorAngle = cursorAngle + cursorAngleFactor
 end
 
 function mainmenu.draw()
