@@ -2,6 +2,11 @@
 
 Game made during Kenney Jam 2019 with theme "Unlikely Combinations".
 
+## Play:
+You can launch main.lua with LÖVE : https://love2d.org/
+
+There is downloable .love and .exe on itch.io page : https://s1l3nce.itch.io/zztype
+
 ## Goal:
 
 Protect your base by destroying every meteors before they reach it
