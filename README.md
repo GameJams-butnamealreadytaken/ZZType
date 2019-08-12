@@ -11,7 +11,7 @@ Type words to fire missiles on meteors.
 There is 3 game modes to play:
 - Classic: Inifinite waves, keep the base safe as mush as you can.
 - Theme: Same thing wi.. (╯°□°)╯︵ sʇǝssɐ
-- Custom:(wip) No waves but a meteor for each word in the file. Designed for lyrics/book content
+- Custom: A meteor for each word of each line of a file. Designed for lyrics/book content
 
 Click ZZType  on the menu to understand game name.
 
