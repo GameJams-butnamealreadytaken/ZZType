@@ -29,7 +29,7 @@ function mainmenu.initialize()
 	textHelpTheme = "Same that classic but..\nWTF are those unlikely combinations of assets ??? :o"
 	
 	textCustom = "Custom"
-	textHelpCustom = "No waves, every words from a custom file in a row.\nGreat to play with lyrics\n(wip)"
+	textHelpCustom = "Every words of lines from a custom file.\nGreat to play with lyrics\n(wip)"
 	
 	currentHelpText = nil
 	

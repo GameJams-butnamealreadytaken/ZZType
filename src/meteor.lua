@@ -88,14 +88,18 @@ function meteor.create(minWordLength, maxWordLength)
 	local angle = (love.math.random(0 ,200) - 100) / 10000
 	
 	-- Get word
-	local wordSize = 0
-	repeat
-		wordSize = love.math.random(minWordLength, maxWordLength)
-	until dictionary[wordSize] ~= nil
+	local text
+	if (mode.custom == true) then
+		text = dictionaryToUse[minWordLength][maxWordLength]
+	else
+		local wordSize = 0
+		repeat
+			wordSize = love.math.random(minWordLength, maxWordLength)
+		until dictionaryToUse[wordSize] ~= nil
 
-	wordId = love.math.random(1, #dictionary[wordSize])
-	local text = dictionary[wordSize][wordId]
-
+		wordId = love.math.random(1, #dictionaryToUse[wordSize])
+		text = dictionaryToUse[wordSize][wordId]
+	end
 	-- Get sprite based on word length
 	local texty
 	local spriteType = love.math.random(1, 2)

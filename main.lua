@@ -29,6 +29,7 @@ stats =
 	bestScoreCustom = 0, 
 	comboCustom = 0, 
 	bestComboCustom = 0, 
+	waveLevelCustom = 0, 
 }
 
 gameState = 
@@ -80,8 +81,6 @@ function love.load()
 	game.initialize()
 	
 	currentState.play()
-	
-	textdbg = dictionary.maxWordLength
  end
 
 function love.update(dt)
@@ -168,6 +167,7 @@ function saveStats()
     save = save.. ";stats.scoreCustom = " .. stats.scoreCustom
     save = save.. ";stats.bestScoreCustom = " .. stats.bestScoreCustom
     save = save.. ";stats.bestComboCustom = " .. stats.bestComboCustom
+    save = save.. ";stats.waveLevelCustom = " .. stats.waveLevelCustom
 	
     love.filesystem.write(fileName, save)
 end
@@ -182,8 +182,8 @@ function stats.setStat(name, value)
 			stats[name.."Theme"] = value
 		end
 	else
-		if (stats[name.."Combo"] ~= nil) then
-			stats[name.."Combo"] = value
+		if (stats[name.."Custom"] ~= nil) then
+			stats[name.."Custom"] = value
 		end
 	end
 end
@@ -198,8 +198,8 @@ function stats.getStat(name)
 			return stats[name.."Theme"]
 		end
 	else
-		if (stats[name.."Combo"] ~= nil) then
-			return stats[name.."Combo"]
+		if (stats[name.."Custom"] ~= nil) then
+			return stats[name.."Custom"]
 		end
 	end
 	

@@ -5,6 +5,7 @@ missile = require 'src/missile'
 meteor = require 'src/meteor'
 
 dictionary  = require 'src/dictionary'
+dictionaryToUse = dictionary.dico
 
 local musicTheme
 
@@ -31,7 +32,12 @@ function game.play()
 		if (love.audio.getActiveSourceCount() == 0) then
 			mainmenu.music:play()
 		end
-		
+	end
+	
+	if (mode.custom == true) then
+		dictionaryToUse = dictionary.custom
+	else
+		dictionaryToUse = dictionary.dico
 	end
 	
 	stats.setStat("score", 0)
@@ -73,16 +79,21 @@ function game.draw()
 end
 
 function launchWave()
-	local waveLevel = stats.getStat("waveLevel")
-	local meteorInWave = 3 + math.floor(waveLevel / 3)
-	local minWordLength = math.min(3 + math.floor(waveLevel/ 5), dictionary.maxWordLength - 1)
-	minWordLength = math.max(minWordLength, dictionary.minWordLength)
-	local maxWordLength = math.min(3 + math.floor(waveLevel/ 3), dictionary.maxWordLength)
-	
-	--text=game.waveLevel  .. " : " .. meteorInWave .. " " .. minWordLength .. " " .. maxWordLength
-	
-	for i = 1, meteorInWave do
-		meteor.create(minWordLength, maxWordLength)
+	if (mode.custom == true) then
+		local meteorInWave = dictionaryToUse[stats.getStat("waveLevel")].wordCounter
+		for i = 1, meteorInWave do
+			meteor.create(stats.getStat("waveLevel"), i)
+		end
+	else
+		local waveLevel = stats.getStat("waveLevel")
+		local meteorInWave = 3 + math.floor(waveLevel / 3)
+		local minWordLength = math.min(3 + math.floor(waveLevel/ 5), dictionaryToUse.maxWordLength - 1)
+		minWordLength = math.max(minWordLength, dictionaryToUse.minWordLength)
+		local maxWordLength = math.min(3 + math.floor(waveLevel/ 3), dictionaryToUse.maxWordLength)
+		
+		for i = 1, meteorInWave do
+			meteor.create(minWordLength, maxWordLength)
+		end
 	end
 end
 
@@ -95,6 +106,14 @@ function game.waveEnded()
 	meteor.reset()
 	missile.reset()
 	stats.setStat("waveLevel", stats.getStat("waveLevel") + 1)
+	
+	if (mode.custom == true) then
+		if (stats.getStat("waveLevel") > dictionaryToUse.lineCounter) then
+			game.takeDamage()
+			return
+		end
+	end
+	
 	launchWave()
 end
 
@@ -115,7 +134,7 @@ function game.textinput(t)
 end
 
 function game.keypressed(key)
-	if key == "f1" then	
+	if key == "f1" then
 		game.waveEnded()
 	elseif key == "escape" then
 		game.takeDamage()
