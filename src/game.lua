@@ -75,7 +75,7 @@ function game.draw()
 
     love.graphics.print(textScore, 10, windowHeight - 20)
     love.graphics.print(textCombo, 10, windowHeight - 40)
-    love.graphics.print(textWave, windowWidth - 100, windowHeight - 20)
+    love.graphics.print(textWave, windowWidth - 68 - (#tostring(stats.getStat("waveLevel"))*19), windowHeight - 20)
 end
 
 function launchWave()
@@ -118,6 +118,7 @@ function game.waveEnded()
 end
 
 function game.textinput(t)
+	t = string.lower(t)
     meteorId = meteor.onTexteEntered(t)
 
 	if (0 == meteorId) then
@@ -136,6 +137,7 @@ end
 function game.keypressed(key)
 	if key == "f1" then
 		game.waveEnded()
+		for k,v in pairs(dictionaryUsedId) do dictionaryUsedId[k]=nil end
 	elseif key == "escape" then
 		game.takeDamage()
 	elseif key == "backspace" then

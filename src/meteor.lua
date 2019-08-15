@@ -1,6 +1,7 @@
 meteor = {meteorCpt = 0, maxMeteorId = 0, speedFactor = 1, focusedId = 0}
 
 local meteorSprites, meteorSpritesTheme
+dictionaryUsedId = {}
 
 function meteor.initialize()
 	meteorSprites = 
@@ -97,8 +98,13 @@ function meteor.create(minWordLength, maxWordLength)
 			wordSize = love.math.random(minWordLength, maxWordLength)
 		until dictionaryToUse[wordSize] ~= nil
 
-		wordId = love.math.random(1, #dictionaryToUse[wordSize])
+		for i = 0, 5 do
+			wordId = love.math.random(1, #dictionaryToUse[wordSize])
+			if (dictionaryUsedId[dictionaryToUse[wordSize][wordId]:sub(1,1)] == nil) then break end
+		end
+		
 		text = dictionaryToUse[wordSize][wordId]
+		dictionaryUsedId[text:sub(1, 1)] = true
 	end
 	-- Get sprite based on word length
 	local texty
@@ -193,10 +199,8 @@ function meteor.draw()
 			if (meteor.focusedId == i) then
 				love.graphics.setColor(255,0,0)
 			end
-			-- Have to offset text location because of offset applied on sprite for rotation
-			--love.graphics.print(meteor[i].text, meteor[i].textx - meteor[i].sprite:getWidth() / 2, meteor[i].texty - meteor[i].sprite:getHeight() / 2, 0, 1, 1, defaultFont:getWidth(meteor[i].text) / 2, defaultFont:getHeight(meteor[i].text) / 2)
+			
 			love.graphics.print(meteor[i].text, meteor[i].textx - meteor[i].sprite:getWidth() / 2, meteor[i].texty - meteor[i].sprite:getHeight() / 2, 0, 1, 1)
-			--love.graphics.print(i, meteor[i].textx, meteor[i].texty + 10)
 			if (meteor.focusedId == i) then
 				love.graphics.setColor(255,255,255)
 			end
@@ -249,6 +253,7 @@ function meteor.removeMeteor(meteorId)
 	-- Check if wave is ended
 	if (meteor.meteorCpt == 0) then 
 		game.waveEnded()
+		for k,v in pairs(dictionaryUsedId) do dictionaryUsedId[k]=nil end
 		return true
 	end
 	
