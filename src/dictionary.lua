@@ -8,6 +8,7 @@ function dictionary.initialize()
 				dictionary.dico[#line] = {}
 				dictionary.dico.maxWordLength = math.max(dictionary.dico.maxWordLength, #line)
 			end
+			line = string.lower(line)
 			dictionary.dico[#line][#dictionary.dico[#line] + 1] = line
 		end
 	end
@@ -19,6 +20,7 @@ function dictionary.initialize()
 			dictionary.custom[dictionary.custom.lineCounter] = { wordCounter = 0 }
 			for token in line:gmatch("[^%s]+") do
 				dictionary.custom[dictionary.custom.lineCounter].wordCounter = dictionary.custom[dictionary.custom.lineCounter].wordCounter + 1
+				token = string.lower(token)
 				dictionary.custom[dictionary.custom.lineCounter][dictionary.custom[dictionary.custom.lineCounter].wordCounter] = token
 			end
 		end

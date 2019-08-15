@@ -2,6 +2,7 @@ game = { state = "game"}
 
 ship = require 'src/ship'
 missile = require 'src/missile'
+bigbertha = require 'src/bigbertha'
 meteor = require 'src/meteor'
 
 dictionary  = require 'src/dictionary'
@@ -12,6 +13,7 @@ local musicTheme
 local textScore = ""
 local textCombo = ""
 local textWave = ""
+local textBigBertha = ""
 
 function game.initialize()
 	musicTheme = love.audio.newSource('resources/musicGameTheme.wav', 'stream')
@@ -22,6 +24,7 @@ function game.initialize()
 	ship.initialize()
 	meteor.initialize()
 	missile.initialize()
+	bigbertha.initialize()
  end
 
 function game.play()
@@ -46,6 +49,7 @@ function game.play()
 	
 	ship.play()
 	missile.play()
+	bigbertha.play()
 	
 	launchWave()
 end
@@ -57,25 +61,30 @@ function game.stop()
 	stats.setStat("bestWave", math.max(stats.getStat("waveLevel"), stats.getStat("bestWave")))
 	meteor.reset()
 	missile.reset()
+	bigbertha.reset()
 end
 
 function game.update(dt)
 	meteor.update(dt)
 	missile.update(dt)
+	bigbertha.update(dt)
 	
 	textScore = "Score : " .. stats.getStat("score")
 	textCombo = "Combo : "	 .. stats.getStat("combo")
 	textWave = "Wave "	 .. stats.getStat("waveLevel")
+	textBigBertha = bigBertha.cptBertha
 end
 
 function game.draw()
 	meteor.draw()
 	missile.draw()
+	bigbertha.draw()
 	ship.draw()
 
     love.graphics.print(textScore, 10, windowHeight - 20)
     love.graphics.print(textCombo, 10, windowHeight - 40)
     love.graphics.print(textWave, windowWidth - 68 - (#tostring(stats.getStat("waveLevel"))*19), windowHeight - 20)
+    love.graphics.print(textBigBertha, windowWidth - 30, windowHeight - 40)
 end
 
 function launchWave()
@@ -118,6 +127,8 @@ function game.waveEnded()
 end
 
 function game.textinput(t)
+	if (t == ' ') then return end
+	
 	t = string.lower(t)
     meteorId = meteor.onTexteEntered(t)
 
@@ -126,6 +137,8 @@ function game.textinput(t)
 		stats.setStat("combo", 0)
 	else
 		stats.setStat("combo", stats.getStat("combo") + 1)
+		if (math.mod(stats.getStat("combo"), 50) == 0) then bigBertha.cptBertha = bigBertha.cptBertha + 1 end
+
 		ship.launchMissile(meteorId)
 		local res, meteorScore = meteor.consumeLetter(meteorId)
 		if (res == true) then
@@ -142,6 +155,10 @@ function game.keypressed(key)
 		game.takeDamage()
 	elseif key == "backspace" then
 		meteor.focusedId = 0
+	elseif key == "space" then
+		if (not bigBertha.isLaunched()) then
+			bigbertha.launch()
+		end
 	end
 end
 

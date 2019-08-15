@@ -245,7 +245,6 @@ end
 -- Remove a given meteor
 -- Return true if it was the last one
 function meteor.removeMeteor(meteorId)
-	textdbg = meteorId
 	meteor[meteorId] = nil
 	meteor.meteorCpt = meteor.meteorCpt - 1
 	-- Check if can reduce max ID

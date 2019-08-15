@@ -96,7 +96,7 @@ function missile.update(dt)
 	for i = 1, missile.maxMissileId do
 		if (missile[i] ~= nil ) then
 			local targetMeteor = meteor[missile[i].meteorId]
-			if (targetMeteor == nil) then removeMissile(i) return end
+			if (targetMeteor == nil) then missile.removeMissile(i) return end
 			
 			if (missile[i].explode == true) then
 				-- Explosion Animation
@@ -109,7 +109,7 @@ function missile.update(dt)
 						if (targetMeteor.lifePoint == 0) then
 							if (meteor.removeMeteor(missile[i].meteorId) == true) then return end
 						end
-						removeMissile(i)
+						missile.removeMissile(i)
 					else
 						missile[i].exploSprite = explosionCurrent[missile[i].explosionCpt]
 					end
@@ -159,7 +159,7 @@ function missile.draw()
 	end
 end
 
-function removeMissile(missileId)
+function missile.removeMissile(missileId)
 	missile[missileId] = nil
 	missile.missileCpt = missile.missileCpt - 1
 	if (missileId == missile.maxMissileId) then missile.maxMissileId = missile.maxMissileId - 1 end
