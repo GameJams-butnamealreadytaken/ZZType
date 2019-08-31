@@ -61,7 +61,7 @@ end
 
 function love.load()
 	love.window.setTitle("ZZType")
-    love.window.setMode(windowWidth, windowHeight)
+    --love.window.setMode(windowWidth, windowHeight)
 
 	love.filesystem.setIdentity("ZZType")
 
